@@ -1,138 +1,230 @@
 # Contacts API - Projeto Spring Boot
 
-Este é um projeto de API REST para gerenciar contatos, desenvolvido utilizando o **Spring Boot**. A API oferece operações básicas para criar, atualizar, deletar e buscar contatos, além de funcionalidades como validação de dados, pesquisa de contatos e um método PATCH para atualização parcial dos dados.
+Este é um projeto de API REST para gerenciar contatos, desenvolvido utilizando o Spring Boot. A API oferece operações básicas para criar, atualizar, deletar e buscar contatos, além de funcionalidades como validação de dados, pesquisa de contatos, atualização parcial via PATCH e suporte a endereços.
+
+---
 
 ## 📝 Funcionalidades
 
-- **Criar um contato**: Permite adicionar um novo contato com informações como nome, telefone, e-mail e endereços.
-- **Obter todos os contatos**: Lista todos os contatos armazenados no sistema.
-- **Buscar contatos pelo nome**: Permite buscar contatos que correspondam a um nome específico.
-- **Atualizar um contato (PUT)**: Atualiza completamente um contato existente.
-- **Atualizar parcialmente um contato (PATCH)**: Permite a atualização de apenas campos específicos de um contato.
-- **Deletar um contato**: Exclui um contato do sistema.
-- **Adicionar e listar endereços**: Cada contato pode ter um ou mais endereços associados, sendo possível listar os endereços de um contato específico.
+- Criar um contato
+- Listar todos os contatos
+- Buscar contatos pelo nome
+- Atualização completa (PUT)
+- Atualização parcial (PATCH)
+- Deletar contatos
+- Adicionar e listar endereços
+
+---
 
 ## 🚀 Tecnologias Utilizadas
 
-- **Spring Boot**: Framework Java para criação de APIs REST.
-- **JPA (Java Persistence API)**: Para manipulação do banco de dados.
-- **H2 Database**: Banco de dados em memória, utilizado para fins de desenvolvimento.
-- **JUnit**: Framework para testes automatizados.
-- **Maven**: Gerenciador de dependências e construção do projeto.
+- **Spring Boot**: Framework principal para construção da API
+- **JPA / Hibernate**: Para mapeamento objeto-relacional
+- **H2 Database**: Banco de dados em memória para ambiente inicial
+- **JUnit**: Para testes unitários
+- **Maven**: Gerenciador de dependências e build
+
+---
 
 ## 📁 Estrutura do Projeto
 
 ```
-src
-├── main
-│   ├── java
-│   │   ├── br
-│   │   │   └── ifsp
-│   │   │       └── contacts
-│   │   │           ├── controller      # Contém os controladores (endpoints da API)
-│   │   │           ├── model           # Modelos das entidades (Contact, Address)
-│   │   │           ├── repository      # Interfaces para manipulação de dados no banco
-│   │   │           └── exceptions
-│   └── resources
-│       └── application.properties      # Configurações do Spring Boot
+contacts-api/aula04
+│   .gitattributes
+│   .gitignore
+│   HELP.md
+│   LICENSE
+│   mvnw
+│   mvnw.cmd
+│   pom.xml
+│   README.markdown
+│
+├───.idea
+│       .gitignore
+│       compiler.xml
+│       encodings.xml
+│       jarRepositories.xml
+│       misc.xml
+│       vcs.xml
+│       workspace.xml
+│
+├───.mvn
+│   └───wrapper
+│           maven-wrapper.properties
+│
+├───prints
+│       paginacaoOrdenacao.jpg
+│       Swagger UI - DOCS API.pdf
+│       teste01_aula04.jpg
+│       teste02_aula04.jpg
+│       teste03_aula04.jpg
+│       teste04_aula04.jpg
+│       teste05_aula04.jpg
+│       teste06_aula04.jpg
+│       teste07_aula04.jpg
+│       teste08_aula04.jpg
+│       teste09_aula04.jpg
+│
+├───src
+│   ├───main
+│   │   ├───java
+│   │   │   └───br
+│   │   │       └───ifsp
+│   │   │           └───contacts
+│   │   │               │   ContactsApiApplication.java
+│   │   │               │
+│   │   │               ├───config
+│   │   │               │       SwaggerConfig.java
+│   │   │               │
+│   │   │               ├───controller
+│   │   │               │       AddressController.java
+│   │   │               │       ContactController.java
+│   │   │               │
+│   │   │               ├───dto
+│   │   │               │       AddressDTO.java
+│   │   │               │       ContactDTO.java
+│   │   │               │
+│   │   │               ├───exceptions
+│   │   │               │       GlobalExceptionHandler.java
+│   │   │               │       ResourceNotFoundException.java
+│   │   │               │
+│   │   │               ├───model
+│   │   │               │       Address.java
+│   │   │               │       Contact.java
+│   │   │               │
+│   │   │               ├───repository
+│   │   │               │       AddressRepository.java
+│   │   │               │       ContactRepository.java
+│   │   │               │
+│   │   │               └───service
+│   │   │                       AddressService.java
+│   │   │                       ContactService.java
+│   │   │
+│   │   └───resources
+│   │       │   application.properties
+│   │       │
+│   │       ├───static
+│   │       └───templates
+│   └───test
+│       └───java
+│           └───br
+│               └───ifsp
+│                   └───contacts
+│                           ContactsApiApplicationTests.java
+│
+└───target
 ```
+
+---
 
 ## 🛠 Como Rodar o Projeto
 
-### Requisitos
+### ✅ Requisitos
 
-- **Java 17** ou superior.
-- **Maven** instalado na sua máquina.
-- **Postman** ou **Insomnia** para testar a API (opcional).
+- Java 17+
+- Maven
 
-### Passos
+### ✅ Executando
 
-1. **Clonar o repositório**:
+1. Clone o repositório:
+
    ```bash
    git clone https://github.com/diogoalmeida34/contacts-api.git
    ```
 
-2. **Navegar para o diretório do projeto**:
+2. Acesse o diretório do projeto:
+
    ```bash
    cd contacts-api
    ```
 
-3. **Rodar o projeto**:
-   Se você tem o Maven instalado, pode rodar o projeto com o seguinte comando:
+3. Execute a aplicação:
+
    ```bash
    mvn spring-boot:run
    ```
-   Isso iniciará o servidor na porta **8080**.
 
-## 🧪 Testando a API
+A aplicação estará disponível em: ➡️ http://localhost:8080
 
-Você pode testar os endpoints da API utilizando ferramentas como **Postman**, **Insomnia** ou **cURL**.
+---
 
-### Endpoints Disponíveis
+## ✅ Funcionalidades Implementadas
 
-- **GET /api/contacts**  
-  Retorna todos os contatos.
+### Endpoints e Regras de Negócio
 
-- **GET /api/contacts/{id}**  
-  Retorna um contato específico pelo ID.
+- **Buscar contatos por nome**\
+  `GET /api/contacts/search` com parâmetro `name`.
 
-- **GET /api/contacts/search**  
-  Permite buscar contatos pelo nome.  
-  Exemplo de uso:  
-  ```
-  GET /api/contacts/search?name=João
-  ```
+- **Atualização parcial com PATCH**\
+  `PATCH /api/contacts/{id}` permitindo modificar apenas campos específicos.
 
-- **POST /api/contacts**  
-  Cria um novo contato.  
-  Corpo da requisição (JSON):
-  ```json
-  {
-    "nome": "João Silva",
-    "telefone": "999999999",
-    "email": "joao@email.com",
-    "addresses": [
-      {
-        "rua": "Rua Exemplo",
-        "cidade": "São Paulo",
-        "estado": "SP",
-        "cep": "01234-567"
-      }
-    ]
-  }
-  ```
+- **Modelo Address e relacionamento**\
+  Criado modelo `Address` e associada a entidade `Contact` via relacionamento.
 
-- **PUT /api/contacts/{id}**  
-  Atualiza um contato completamente.
+- **Validações de dados**\
+  Aplicadas anotações de validação para garantir consistência das requisições.
 
-- **PATCH /api/contacts/{id}**  
-  Atualiza parcialmente um contato.  
-  Exemplo de corpo da requisição:
-  ```json
-  {
-    "email": "novoemail@email.com"
-  }
-  ```
+---
 
-- **DELETE /api/contacts/{id}**  
-  Deleta um contato pelo ID.
+## 📚 Exercícios Entregues (Documentação/Pesquisa)
 
-- **GET /api/contacts/{id}/addresses**  
-  Retorna todos os endereços de um contato específico.
+### 🔹 REST vs SOAP
 
-## 🛠 Exercícios Realizados
+Pesquisa realizada e documentada, com prints salvos no diretório `/prints`.
 
-1. **Criar um Novo Endpoint GET**  
-   Criamos um endpoint para buscar contatos pelo nome.
+### 🔹 Swagger (OpenAPI)
 
-2. **Implementando um Método PATCH**  
-   Implementamos um método PATCH para permitir a atualização parcial dos dados de um contato.
+- Dependências adicionadas no `pom.xml`.
 
-3. **REST vs SOAP**  
-   Pesquisamos sobre a diferença entre APIs REST e SOAP e como elas se aplicam a diferentes cenários.
+- Classe de configuração criada.
 
-4. **Criando um Novo Modelo de Dados (Address)**  
-   Adicionamos a entidade **Address** para armazenar endereços associados aos contatos, criando uma relação bidirecional entre **Contact** e **Address**.
+- Interface visual funcionando.
 
-5. **Melhorando a Validação dos Dados**  
-   Adicionamos validações no modelo **Contact**, como verificação do formato do telefone e e-mail.
+- Prints no diretório `/prints`.
+
+---
+
+## ✅ Banco de Dados Relacional
+
+- ✔️ **Configuração atualizada no** `application.properties`**.**
+
+- ✔️ **Dependências adicionadas no** `pom.xml`**.**
+
+- Compatível com **MySQL**.
+
+---
+
+## ✅ Paginação e Ordenação
+
+- ✔️ Implementado com `Pageable`.
+
+- ✔️ Endpoints aceitam `page`, `size` e `sort`.
+
+---
+
+## 📌 Exercícios Finais Pendentes
+
+### 🟠 DTOs (Data Transfer Objects)
+
+- Criar DTOs para:
+
+  - `Contact`
+
+  - `Address`
+
+- Ajustar controllers para entrada e saída utilizando os DTOs.
+
+---
+
+## 🚀 Entrega do Projeto
+
+### 📂 Código-Fonte
+
+Repositório com rotas implementadas:\
+👉 https://github.com/diogoalmeida34/contacts-api/tree/aula04
+
+Disponível na branch \`aula04\` também em formato .zip, se necessário.
+
+### 🖼 Prints de Documentação
+
+- Swagger e Postman salvos no diretório `/prints`.
