@@ -54,10 +54,18 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<Map<String, String>> handleGenericException(Exception exception) {
+    public ResponseEntity<Map<String, String>> handleGenericException(Exception exception, jakarta.servlet.http.HttpServletRequest request) {
+        String path = request.getRequestURI();
+
+        // Permite que o Spring trate exceções do Swagger normalmente
+        if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
+            throw new RuntimeException(exception);
+        }
+
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", "Erro interno no servidor. Entre em contato com o suporte.");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
     }
+
 
 }

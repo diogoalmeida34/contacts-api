@@ -1,86 +1,73 @@
 package br.ifsp.contacts.controller;
 
-import br.ifsp.contacts.model.Contact;
-import br.ifsp.contacts.repository.ContactRepository;
+import br.ifsp.contacts.dto.ContactDTO;
+import br.ifsp.contacts.service.ContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import java.util.Map;
-import br.ifsp.contacts.exceptions.ResourceNotFoundException;
 
-
-import java.util.List;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/contacts")
 @Validated
-
+@Tag(name = "Contacts", description = "Gerenciamento de contatos")
 public class ContactController {
 
     @Autowired
-    private ContactRepository contactRepository;
+    private ContactService contactService;
 
     @GetMapping
-    public List<Contact> getAllContacts() {
-        return contactRepository.findAll();
+    @Operation(summary = "Lista todos os contatos", description = "Retorna uma lista paginada de contatos")
+    public Page<ContactDTO> getAllContacts(Pageable pageable) {
+        return contactService.getAllContacts(pageable);
     }
 
     @GetMapping("{id}")
-    public Contact getContactById(@PathVariable Long id) {
-        return contactRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Contato não encontrado: " + id));
+    @Operation(summary = "Busca um contato pelo ID", description = "Retorna os dados de um contato específico")
+    public ContactDTO getContactById(@PathVariable Long id) {
+        return contactService.getContactById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Contact createContact(@Valid @RequestBody Contact contact) {
-        return contactRepository.save(contact);
+    @Operation(summary = "Cria um novo contato", description = "Cria um novo contato a partir de um DTO")
+    public ContactDTO createContact(@Valid @RequestBody ContactDTO contactDTO) {
+        return contactService.createContact(contactDTO);
     }
 
     @PutMapping("/{id}")
-    public Contact updateContact(@PathVariable Long id, @Valid @RequestBody Contact updatedContact) {
-        Contact existingContact = contactRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Contato não encontrado: " + id));
-
-        existingContact.setNome(updatedContact.getNome());
-        existingContact.setEmail(updatedContact.getEmail());
-        existingContact.setTelefone(updatedContact.getTelefone());
-        existingContact.setAddresses(updatedContact.getAddresses());
-
-        return contactRepository.save(existingContact);
-    }
-
-    @PatchMapping("/{id}")
-    public Contact updateContactPartial(@PathVariable Long id, @RequestBody Map<String, String> updates) {
-        Contact contact = contactRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Contato não encontrado: " + id));
-
-        updates.forEach((key, value) -> {
-            switch (key) {
-                case "nome":
-                    contact.setNome(value);
-                    break;
-                case "telefone":
-                    contact.setTelefone(value);
-                    break;
-                case "email":
-                    contact.setEmail(value);
-                    break;
-            }
-        });
-
-        return contactRepository.save(contact);
+    @Operation(summary = "Atualiza um contato", description = "Atualiza os dados de um contato existente")
+    public ContactDTO updateContact(@PathVariable Long id,
+                                    @Valid @RequestBody ContactDTO updatedContactDTO) {
+        return contactService.updateContact(id, updatedContactDTO);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Deleta um contato", description = "Remove um contato pelo seu ID")
     public void deleteContact(@PathVariable Long id) {
-        contactRepository.deleteById(id);
+        contactService.deleteContact(id);
     }
 
     @GetMapping("/search")
-    public List<Contact> searchContactsByName(@RequestParam String name) {
-        return contactRepository.findByNomeContainingIgnoreCase(name);
+    @Operation(summary = "Busca contatos por nome", description = "Retorna contatos cujo nome contenha o termo informado")
+    public Page<ContactDTO> searchContactsByName(@RequestParam String name, Pageable pageable) {
+        return contactService.searchContactsByName(name, pageable);
+    }
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "Atualização parcial de contato", description = "Permite atualizar apenas alguns campos do contato")
+    public ContactDTO updatePartialContact(
+            @PathVariable Long id,
+            @RequestBody(required = false) Map<String, Object> updates) {
+        return contactService.updatePartialContact(id, updates);
     }
 }
